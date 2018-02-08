@@ -1,67 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
+import Title from './components/Title/Title';
+import Instructions from './components/Instructions/Instructions';
+import SpotifyButton from './components/SpotifyButton/SpotifyButton';
+import BpmDisplay from './components/BpmDisplay/BpmDisplay';
 import './App.css';
-
-const Title = () => {
-  const style = {
-    fontSize: '3.5rem',
-    color: 'white',
-    letterSpacing: '0.2rem',
-  };
-  return (
-    <Fragment>
-      <h1 style={style}>Tapify</h1>
-    </Fragment>
-  );
-};
-
-const Instructions = () => (
-  <Fragment>
-    <p style={{ color: 'white' }}>Tap the 'spacebar' to calculate tempo and 'r' to reset</p>
-  </Fragment>
-);
-
-const BpmDisplay = props => {
-  const style = {
-    fontSize: '3rem',
-    color: 'white',
-  };
-  return (
-    <Fragment>
-      <p style={style}>{Math.floor(props.tempo)} BPM</p>
-    </Fragment>
-  );
-};
-
-const SpotifyLogin = () => {
-  const style = {
-    color: '#fff',
-    backgroundColor: '#1db954',
-    border: '1px solid transparent',
-    borderRadius: '500px',
-    fontSize: '1rem',
-    fontWeight: '700',
-    letterSpacing: '2px',
-    margin: '30px 0',
-    padding: '20px 56px',
-    textDecoration: 'none',
-    transitionDuration: '0.3s',
-    transitionProperty: 'background-color',
-    textTransform: 'uppercase',
-  };
-
-  // const btnHover = {
-  //   backgroundColor: '#1ed760',
-  //   cursor: 'pointer'
-  // }
-
-  return (
-    <Fragment>
-      <button id="login-button" style={style} href="#">
-        Login to Spotify
-      </button>
-    </Fragment>
-  );
-};
 
 class App extends Component {
   state = {
@@ -97,7 +39,7 @@ class App extends Component {
       <div className="App">
         <Title />
         <Instructions />
-        <SpotifyLogin />
+        <SpotifyButton />
         {this.state.averageTempo > 0 && <BpmDisplay tempo={this.state.averageTempo} />}
       </div>
     );
