@@ -3,6 +3,7 @@ import Title from './components/Title/Title';
 import Instructions from './components/Instructions/Instructions';
 import SpotifyButton from './components/SpotifyButton/SpotifyButton';
 import BpmDisplay from './components/BpmDisplay/BpmDisplay';
+import Playlist from './components/Playlist/Playlist';
 import './App.css';
 
 class App extends Component {
@@ -41,6 +42,7 @@ class App extends Component {
         <Instructions />
         <SpotifyButton />
         {this.state.averageTempo > 0 && <BpmDisplay tempo={this.state.averageTempo} />}
+        <Playlist />
       </div>
     );
   }
