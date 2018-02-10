@@ -143,7 +143,7 @@ class App extends Component {
     return (
       <div className="App">
         <Title />
-        <Instructions />
+        {this.state.loggedIn && <Instructions />}
         {!this.state.loggedIn && <SpotifyButton />}
         {this.state.averageTempo > 0 && <BpmDisplay tempo={this.state.averageTempo} />}
         {this.state.playlist.length > 0 && (
