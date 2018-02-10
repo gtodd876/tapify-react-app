@@ -3,7 +3,7 @@ import './SpotifyButton.css';
 
 const SpotifyButton = () => (
   <button
-    onClick={() => (window.location = 'https://limitless-woodland-67549.herokuapp.com/login')}
+    onClick={() => (window.location = process.env.BACKEND_URI || 'http://localhost:8888/login')}
     className="login"
     id="login-button"
   >
