@@ -2,7 +2,7 @@ import React from 'react';
 import './SpotifyButton.css';
 
 const SpotifyButton = () => (
-  <button className="login" id="login-button" href="#">
+  <button onClick={() => (window.location = 'http://localhost:8888/login')} className="login" id="login-button">
     Login to Spotify
   </button>
 );
