@@ -90,7 +90,7 @@ class App extends Component {
     this.setState({ accessToken });
     if (accessToken) this.setState({ loggedIn: true });
     document.body.addEventListener('keyup', this.tempoLogic, false);
-    document.body.addEventListener('touchstart', this.tempoLogic, false);
+    window.addEventListener('touchstart', this.tempoLogic, false);
   }
 
   componentDidMount() {
