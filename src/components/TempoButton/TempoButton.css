@@ -1,0 +1,20 @@
+.submit-tempo {
+  color: #fff;
+  background-color: #1db954;
+  border: 1px solid transparent;
+  border-radius: 500px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 30px 0;
+  padding: 20px 56px;
+  text-decoration: none;
+  transition-duration: 0.3s;
+  transition-property: background-color;
+  text-transform: uppercase;
+}
+
+.submit-tempo:hover {
+  background-color: #1ed760;
+  cursor: pointer;
+}

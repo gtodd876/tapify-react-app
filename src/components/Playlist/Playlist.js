@@ -5,8 +5,6 @@ import MdPlayCircleOutline from 'react-icons/lib/md/play-circle-outline';
 import './Playlist.css';
 
 const Playlist = props => {
-  console.log(props);
-
   return (
     <div className="song-card">
       <FaAngleLeft className="arrow arrow-left" onClick={() => props.decrementSong()} />

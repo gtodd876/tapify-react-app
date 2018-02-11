@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Title from './components/Title/Title';
 import Instructions from './components/Instructions/Instructions';
 import SpotifyButton from './components/SpotifyButton/SpotifyButton';
+import TempoButton from './components/TempoButton/TempoButton';
 import BpmDisplay from './components/BpmDisplay/BpmDisplay';
 import Playlist from './components/Playlist/Playlist';
 import queryString from 'query-string';
-// import Script from 'react-load-script';
 import './App.css';
 
 class App extends Component {
@@ -13,6 +13,7 @@ class App extends Component {
     super(props);
     this.incrementSong = this.incrementSong.bind(this);
     this.decrementSong = this.decrementSong.bind(this);
+    this.submitTempo = this.submitTempo.bind(this);
   }
   state = {
     accessToken: '',
@@ -20,6 +21,7 @@ class App extends Component {
     averageTempo: 0,
     playlist: [],
     currentSongIndex: 0,
+    tempoSubmitted: false,
   };
 
   incrementSong() {
@@ -33,63 +35,23 @@ class App extends Component {
       this.setState({ currentSongIndex: this.state.currentSongIndex - 1 });
     }
   }
-  // initializePlayer() {
-  //   window.onSpotifyWebPlaybackSDKReady = () => {
-  //     // You can now initialize Spotify.Player and use the SDK
-  //     const token = this.state.accessToken;
-  //     const player = new Spotify.Player({
-  //       name: 'Web Playback SDK Quick Start Player',
-  //       getOAuthToken: cb => {
-  //         cb(token);
-  //       },
-  //     });
 
-  //     // Error handling
-  //     player.on('initialization_error', e => {
-  //       console.error(e);
-  //     });
-  //     player.on('authentication_error', e => {
-  //       console.error(e);
-  //     });
-  //     player.on('account_error', e => {
-  //       console.error(e);
-  //     });
-  //     player.on('playback_error', e => {
-  //       console.error(e);
-  //     });
-
-  //     // Playback status updates
-  //     player.on('player_state_changed', state => {
-  //       console.log(state);
-  //     });
-
-  //     // Ready
-  //     player.on('ready', data => {
-  //       let { device_id } = data;
-  //       console.log('Ready with Device ID', device_id);
-  //     });
-
-  //     // Connect to the player!
-  //     player.connect();
-
-  //     player.getCurrentState().then(state => {
-  //       if (state) {
-  //         let { current_track, next_tracks } = state.track_window;
-
-  //         console.log('Currently Playing', current_track);
-  //         console.log('Playing Next', next_tracks[0]);
-  //       } else {
-  //         console.error('The user is not playing music through the Web Playback SDK');
-  //       }
-  //     });
-
-  //     document.querySelector('play-btn').addEventListener('click', () => {
-  //       player.togglePlay().then(() => {
-  //         console.log('Toggled playback!');
-  //       });
-  //     });
-  //   };
-  // }
+  submitTempo() {
+    console.log('submitted');
+    fetch(
+      `https://api.spotify.com/v1/recommendations?limit=4&market=US&seed_genres=electronic&target_tempo=${
+        this.state.averageTempo
+      }`,
+      {
+        headers: { Authorization: 'Bearer ' + this.state.accessToken },
+      }
+    )
+      .then(res => res.json())
+      .then(data => {
+        this.setState({ playlist: data.tracks });
+        this.setState({ tempoSubmitted: true });
+      });
+  }
 
   tapTempo() {
     const parsed = queryString.parse(window.location.search);
@@ -117,21 +79,6 @@ class App extends Component {
         let bpm = (60000 / average).toFixed(2);
         this.setState({ averageTempo: bpm });
       }
-      if (this.state.averageTempo > 0 && e.keyCode === 13) {
-        fetch(
-          `https://api.spotify.com/v1/recommendations?limit=4&market=US&seed_genres=electronic&target_tempo=${
-            this.state.averageTempo
-          }`,
-          {
-            headers: { Authorization: 'Bearer ' + accessToken },
-          }
-        )
-          .then(res => res.json())
-          .then(data => {
-            this.setState({ playlist: data.tracks });
-            // this.initializePlayer();
-          });
-      }
     });
   }
 
@@ -143,9 +90,10 @@ class App extends Component {
     return (
       <div className="App">
         <Title />
-        {this.state.loggedIn && <Instructions />}
         {!this.state.loggedIn && <SpotifyButton />}
-        {this.state.averageTempo > 0 && <BpmDisplay tempo={this.state.averageTempo} />}
+        {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
+        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <BpmDisplay tempo={this.state.averageTempo} />}
+        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
         {this.state.playlist.length > 0 && (
           <Playlist
             image={this.state.playlist[this.state.currentSongIndex].album.images[1].url}
