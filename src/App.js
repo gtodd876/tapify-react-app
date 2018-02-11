@@ -98,7 +98,7 @@ class App extends Component {
     if (accessToken) this.setState({ loggedIn: true });
     let tempo = [];
     let taps = [];
-    document.body.addEventListener('keydown', e => {
+    document.body.addEventListener('keyup', e => {
       //reset tempo
       if (e.keyCode === 82) {
         tempo = [];
