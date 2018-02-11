@@ -58,6 +58,7 @@ class App extends Component {
   }
 
   tempoLogic(e) {
+    console.log(e.type);
     //reset tempo
     if (e.keyCode === 82) {
       this.setState({ tempos: [] });
@@ -65,7 +66,7 @@ class App extends Component {
       this.setState({ averageTempo: 0 });
     }
     //calculate tempo
-    if (e.keyCode === 32 && e.keyCode !== 82) {
+    if ((e.keyCode === 32 && e.keyCode !== 82) || e.type === 'touchstart') {
       this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
     }
     if (this.state.tempos.length >= 2) {
@@ -89,6 +90,7 @@ class App extends Component {
     this.setState({ accessToken });
     if (accessToken) this.setState({ loggedIn: true });
     document.body.addEventListener('keyup', this.tempoLogic, false);
+    document.body.addEventListener('touchstart', this.tempoLogic, false);
   }
 
   componentDidMount() {
