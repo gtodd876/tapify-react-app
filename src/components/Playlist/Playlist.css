@@ -1,6 +1,6 @@
 .song-card {
   background-color: #fff;
-  width: 40rem;
+  width: 90%;
   height: 25rem;
   margin: auto;
   opacity: 0.86;
@@ -10,7 +10,6 @@
 .arrow {
   color: #1db954;
   font-size: 5rem;
-  margin-top: 10rem;
 }
 
 .arrow-left {

@@ -41,7 +41,6 @@ class App extends Component {
   }
 
   submitTempo() {
-    console.log('submitted');
     fetch(
       `https://api.spotify.com/v1/recommendations?limit=4&market=US&seed_genres=electronic&target_tempo=${
         this.state.averageTempo
@@ -58,7 +57,6 @@ class App extends Component {
   }
 
   tempoLogic(e) {
-    console.log(e.type);
     //reset tempo
     if (e.keyCode === 82) {
       this.setState({ tempos: [] });

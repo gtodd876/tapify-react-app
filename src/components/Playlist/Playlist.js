@@ -7,16 +7,16 @@ import './Playlist.css';
 const Playlist = props => {
   return (
     <div className="song-card">
-      <FaAngleLeft className="arrow arrow-left" onClick={() => props.decrementSong()} />
       <img className="album-cover" src={props.image} alt="local natives album cover" />
-      <FaAngleRight className="arrow arrow-right" onClick={() => props.incrementSong()} />
       <div className="description">
         <p>
           {props.artist} - {props.album}
         </p>
         <p>{props.songTitle}</p>
-        <MdPlayCircleOutline className="play-btn" />
       </div>
+      <FaAngleLeft className="arrow arrow-left" onClick={() => props.decrementSong()} />
+      <MdPlayCircleOutline className="play-btn" />
+      <FaAngleRight className="arrow arrow-right" onClick={() => props.incrementSong()} />
     </div>
   );
 };
