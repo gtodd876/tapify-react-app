@@ -14,6 +14,8 @@ class App extends Component {
     this.incrementSong = this.incrementSong.bind(this);
     this.decrementSong = this.decrementSong.bind(this);
     this.submitTempo = this.submitTempo.bind(this);
+    this.tapTempo = this.tapTempo.bind(this);
+    this.tempoLogic = this.tempoLogic.bind(this);
   }
   state = {
     accessToken: '',
@@ -22,6 +24,8 @@ class App extends Component {
     playlist: [],
     currentSongIndex: 0,
     tempoSubmitted: false,
+    tempos: [],
+    taps: [],
   };
 
   incrementSong() {
@@ -53,33 +57,38 @@ class App extends Component {
       });
   }
 
+  tempoLogic(e) {
+    //reset tempo
+    if (e.keyCode === 82) {
+      this.setState({ tempos: [] });
+      this.setState({ taps: [] });
+      this.setState({ averageTempo: 0 });
+    }
+    //calculate tempo
+    if (e.keyCode === 32 && e.keyCode !== 82) {
+      this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
+    }
+    if (this.state.tempos.length >= 2) {
+      this.setState({
+        taps: [
+          ...this.state.taps,
+          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2],
+        ],
+      });
+    }
+    if (this.state.taps.length >= 2 && e.keyCode !== 82) {
+      let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
+      let bpm = (60000 / average).toFixed(2);
+      this.setState({ averageTempo: bpm });
+    }
+  }
+
   tapTempo() {
     const parsed = queryString.parse(window.location.search);
     const accessToken = parsed.access_token;
     this.setState({ accessToken });
     if (accessToken) this.setState({ loggedIn: true });
-    let tempo = [];
-    let taps = [];
-    document.body.addEventListener('keyup', e => {
-      //reset tempo
-      if (e.keyCode === 82) {
-        tempo = [];
-        taps = [];
-        this.setState({ averageTempo: 0 });
-      }
-      //calculate tempo
-      if (e.keyCode === 32 && e.keyCode !== 82) {
-        tempo.push(new Date().getTime());
-      }
-      if (tempo.length >= 2) {
-        taps.push(tempo[tempo.length - 1] - tempo[tempo.length - 2]);
-      }
-      if (taps.length >= 2 && e.keyCode !== 82) {
-        let average = taps.reduce((a, b) => a + b, 0) / taps.length;
-        let bpm = (60000 / average).toFixed(2);
-        this.setState({ averageTempo: bpm });
-      }
-    });
+    document.body.addEventListener('keyup', this.tempoLogic, false);
   }
 
   componentDidMount() {
