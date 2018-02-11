@@ -4,10 +4,14 @@ import './Instructions.css';
 const Instructions = () => (
   <Fragment>
     <p className="instructions">
-      Tap <span>spacebar</span> to calculate tempo and the <span>r</span> key to reset
+      Tap your desired beat with the<span>spacebar</span> to calculate tempo
     </p>
     <p className="instructions">
-      Press <span>enter</span> to lock in the tempo and a playlist will be created
+      Press <span>r</span> key to reset tempo and start over
+    </p>
+
+    <p className="instructions">
+      After tempo is displayed, tap the submit button to fetch a playlist of songs at your tempo!
     </p>
   </Fragment>
 );
