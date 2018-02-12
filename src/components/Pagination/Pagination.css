@@ -1,0 +1,13 @@
+.page {
+  background-color: #d9d9d9;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  text-align: center;
+  margin: 0.2rem;
+  display: inline-block;
+}
+
+.active {
+  background-color: #1db954;
+}
