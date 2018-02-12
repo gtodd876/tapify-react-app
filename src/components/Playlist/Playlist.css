@@ -5,6 +5,7 @@
   margin: auto;
   opacity: 0.86;
   border-radius: 0.3rem;
+  margin-bottom: 0.3rem;
 }
 
 @media (min-width: 1025px) {
@@ -43,9 +44,4 @@
 
 .play-btn:hover {
   color: #1ed760;
-}
-
-.no-preview {
-  color: rgb(145, 12, 12);
-  margin: 0;
 }

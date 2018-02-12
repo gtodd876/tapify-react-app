@@ -1,0 +1,9 @@
+.no-preview {
+  color: rgb(145, 12, 12);
+  background-color: #fff;
+  margin: auto;
+  opacity: 0.86;
+  border-radius: 0.3rem;
+  display: inline-block;
+  padding: 0.1rem;
+}

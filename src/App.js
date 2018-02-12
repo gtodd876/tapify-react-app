@@ -5,6 +5,7 @@ import SpotifyButton from './components/SpotifyButton/SpotifyButton';
 import TempoButton from './components/TempoButton/TempoButton';
 import BpmDisplay from './components/BpmDisplay/BpmDisplay';
 import Playlist from './components/Playlist/Playlist';
+import NoSongPreview from './components/NoSongPreview/NoSongPreview';
 import queryString from 'query-string';
 import './App.css';
 
@@ -163,6 +164,8 @@ class App extends Component {
             isPlaying={this.state.isPlaying}
           />
         )}
+        {this.state.currentSongUrl === null &&
+          this.state.tempoSubmitted && <NoSongPreview />}
         <audio
           ref={input => {
             this.audioRef = input;

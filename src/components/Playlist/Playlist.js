@@ -34,9 +34,6 @@ const Playlist = props => {
         className="arrow arrow-right"
         onClick={() => props.incrementSong()}
       />
-      {props.songUrl === null && (
-        <p className="no-preview">This track has no preview</p>
-      )}
     </div>
   );
 };
