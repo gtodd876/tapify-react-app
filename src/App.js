@@ -33,17 +33,29 @@ class App extends Component {
 
   incrementSong() {
     if (this.state.currentSongIndex < this.state.playlist.length - 1) {
-      this.setState({ currentSongIndex: this.state.currentSongIndex + 1 }, () => {
-        this.setState({ currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url });
-      });
+      this.setState(
+        { currentSongIndex: this.state.currentSongIndex + 1 },
+        () => {
+          this.setState({
+            currentSongUrl: this.state.playlist[this.state.currentSongIndex]
+              .preview_url,
+          });
+        },
+      );
     }
   }
 
   decrementSong() {
     if (this.state.currentSongIndex > 0) {
-      this.setState({ currentSongIndex: this.state.currentSongIndex - 1 }, () => {
-        this.setState({ currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url });
-      });
+      this.setState(
+        { currentSongIndex: this.state.currentSongIndex - 1 },
+        () => {
+          this.setState({
+            currentSongUrl: this.state.playlist[this.state.currentSongIndex]
+              .preview_url,
+          });
+        },
+      );
     }
   }
 
@@ -54,12 +66,15 @@ class App extends Component {
       }`,
       {
         headers: { Authorization: 'Bearer ' + this.state.accessToken },
-      }
+      },
     )
       .then(res => res.json())
       .then(data => {
         this.setState({ playlist: data.tracks }, () => {
-          this.setState({ currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url });
+          this.setState({
+            currentSongUrl: this.state.playlist[this.state.currentSongIndex]
+              .preview_url,
+          });
         });
         this.setState({ tempoSubmitted: true });
       });
@@ -80,12 +95,14 @@ class App extends Component {
       this.setState({
         taps: [
           ...this.state.taps,
-          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2],
+          this.state.tempos[this.state.tempos.length - 1] -
+            this.state.tempos[this.state.tempos.length - 2],
         ],
       });
     }
     if (this.state.taps.length >= 2 && e.keyCode !== 82) {
-      let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
+      let average =
+        this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
       let bpm = (60000 / average).toFixed(2);
       this.setState({ averageTempo: bpm });
     }
@@ -103,10 +120,10 @@ class App extends Component {
   playPreview() {
     if (!this.state.isPlaying) {
       this.setState({ isPlaying: true });
-      this.refs.audioRef.play();
+      this.audioRef.play();
     } else {
       this.setState({ isPlaying: false });
-      this.refs.audioRef.pause();
+      this.audioRef.pause();
     }
   }
 
@@ -120,12 +137,23 @@ class App extends Component {
         <Title />
         {!this.state.loggedIn && <SpotifyButton />}
         {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
-        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <BpmDisplay tempo={this.state.averageTempo} />}
-        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
+        {this.state.averageTempo > 0 &&
+          !this.state.tempoSubmitted && (
+            <BpmDisplay tempo={this.state.averageTempo} />
+          )}
+        {this.state.averageTempo > 0 &&
+          !this.state.tempoSubmitted && (
+            <TempoButton submitTempo={this.submitTempo} />
+          )}
         {this.state.playlist.length > 0 && (
           <Playlist
-            image={this.state.playlist[this.state.currentSongIndex].album.images[1].url}
-            artist={this.state.playlist[this.state.currentSongIndex].artists[0].name}
+            image={
+              this.state.playlist[this.state.currentSongIndex].album.images[1]
+                .url
+            }
+            artist={
+              this.state.playlist[this.state.currentSongIndex].artists[0].name
+            }
             album={this.state.playlist[this.state.currentSongIndex].album.name}
             songTitle={this.state.playlist[this.state.currentSongIndex].name}
             playPreview={this.playPreview}
@@ -134,7 +162,13 @@ class App extends Component {
             isPlaying={this.state.isPlaying}
           />
         )}
-        <audio ref="audioRef" src={this.state.currentSongUrl} style={{ display: 'none' }} />
+        <audio
+          ref={input => {
+            this.audioRef = input;
+          }}
+          src={this.state.currentSongUrl}
+          style={{ display: 'none' }}
+        />
       </div>
     );
   }
