@@ -11,7 +11,7 @@ const Playlist = props => {
       <img className="album-cover" src={props.image} alt="album cover" />
       <div className="description">
         <p>
-          {props.artist} - {props.album}
+          {props.artist} - {props.album.length <= 19 ? props.album : props.album.slice(0, 17) + '...'}
         </p>
         <p>{props.songTitle}</p>
       </div>
