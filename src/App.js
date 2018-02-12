@@ -102,13 +102,11 @@ class App extends Component {
 
   playPreview() {
     if (!this.state.isPlaying) {
-      this.setState({ isPlaying: true }, () => {
-        this.refs.audioRef.play();
-      });
+      this.setState({ isPlaying: true });
+      this.refs.audioRef.play();
     } else {
-      this.setState({ isPlaying: false }, () => {
-        this.refs.audioRef.pause();
-      });
+      this.setState({ isPlaying: false });
+      this.refs.audioRef.pause();
     }
   }
 
