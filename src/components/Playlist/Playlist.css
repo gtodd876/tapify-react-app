@@ -45,3 +45,8 @@
 .play-btn:hover {
   color: #1ed760;
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

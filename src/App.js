@@ -33,16 +33,25 @@ class App extends Component {
   };
 
   incrementSong() {
+    this.audioRef.pause();
+    this.setState({ isPlaying: false });
     if (this.state.currentSongIndex < this.state.playlist.length - 1) {
-      this.setState({ currentSongIndex: this.state.currentSongIndex + 1 }, () => {
-        this.setState({
-          currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url,
-        });
-      });
+      this.setState(
+        {
+          currentSongIndex: this.state.currentSongIndex + 1,
+        },
+        () => {
+          this.setState({
+            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url,
+          });
+        }
+      );
     }
   }
 
   decrementSong() {
+    this.audioRef.pause();
+    this.setState({ isPlaying: false });
     if (this.state.currentSongIndex > 0) {
       this.setState({ currentSongIndex: this.state.currentSongIndex - 1 }, () => {
         this.setState({
@@ -108,7 +117,7 @@ class App extends Component {
   }
 
   playPreview() {
-    if (!this.state.isPlaying) {
+    if (!this.state.isPlaying && this.state.currentSongUrl !== null) {
       this.setState({ isPlaying: true });
       this.audioRef.play();
     } else {
@@ -140,6 +149,8 @@ class App extends Component {
             incrementSong={this.incrementSong}
             decrementSong={this.decrementSong}
             isPlaying={this.state.isPlaying}
+            currentSongIndex={this.state.currentSongIndex}
+            playlist={this.state.playlist}
           />
         )}
         {this.state.currentSongUrl === null && this.state.tempoSubmitted && <NoSongPreview />}
