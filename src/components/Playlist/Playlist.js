@@ -15,25 +15,13 @@ const Playlist = props => {
         </p>
         <p>{props.songTitle}</p>
       </div>
-      <FaAngleLeft
-        className="arrow arrow-left"
-        onClick={() => props.decrementSong()}
-      />
+      <FaAngleLeft className="arrow arrow-left" onClick={() => props.decrementSong()} />
       {!props.isPlaying ? (
-        <MdPlayCircleOutline
-          className="play-btn"
-          onClick={() => props.playPreview()}
-        />
+        <MdPlayCircleOutline className="play-btn" onClick={() => props.playPreview()} />
       ) : (
-        <MdPauseCircleOutline
-          className="play-btn"
-          onClick={() => props.playPreview()}
-        />
+        <MdPauseCircleOutline className="play-btn" onClick={() => props.playPreview()} />
       )}
-      <FaAngleRight
-        className="arrow arrow-right"
-        onClick={() => props.incrementSong()}
-      />
+      <FaAngleRight className="arrow arrow-right" onClick={() => props.incrementSong()} />
     </div>
   );
 };
