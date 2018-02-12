@@ -6,6 +6,7 @@ import TempoButton from './components/TempoButton/TempoButton';
 import BpmDisplay from './components/BpmDisplay/BpmDisplay';
 import Playlist from './components/Playlist/Playlist';
 import NoSongPreview from './components/NoSongPreview/NoSongPreview';
+import TryAgainButton from './components/TryAgainButton/TryAgainButton';
 import queryString from 'query-string';
 import './App.css';
 
@@ -18,6 +19,7 @@ class App extends Component {
     this.tapTempo = this.tapTempo.bind(this);
     this.tempoLogic = this.tempoLogic.bind(this);
     this.playPreview = this.playPreview.bind(this);
+    this.resetState = this.resetState.bind(this);
   }
   state = {
     accessToken: '',
@@ -31,6 +33,19 @@ class App extends Component {
     currentSongUrl: null,
     isPlaying: false,
   };
+
+  resetState() {
+    this.setState({
+      averageTempo: 0,
+      playlist: [],
+      currentSongIndex: 0,
+      tempoSubmitted: false,
+      tempos: [],
+      taps: [],
+      currentSongUrl: null,
+      isPlaying: false,
+    });
+  }
 
   incrementSong() {
     this.audioRef.pause();
@@ -154,6 +169,8 @@ class App extends Component {
           />
         )}
         {this.state.currentSongUrl === null && this.state.tempoSubmitted && <NoSongPreview />}
+        <br />
+        {this.state.playlist.length > 0 && <TryAgainButton resetState={this.resetState} />}
         <audio
           ref={input => {
             this.audioRef = input;
