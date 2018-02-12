@@ -44,3 +44,8 @@
 .play-btn:hover {
   color: #1ed760;
 }
+
+.no-preview {
+  color: rgb(145, 12, 12);
+  margin-top: 0;
+}

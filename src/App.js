@@ -27,7 +27,7 @@ class App extends Component {
     tempoSubmitted: false,
     tempos: [],
     taps: [],
-    currentSongUrl: '',
+    currentSongUrl: null,
     isPlaying: false,
   };
 
@@ -156,6 +156,7 @@ class App extends Component {
             }
             album={this.state.playlist[this.state.currentSongIndex].album.name}
             songTitle={this.state.playlist[this.state.currentSongIndex].name}
+            songUrl={this.state.currentSongUrl}
             playPreview={this.playPreview}
             incrementSong={this.incrementSong}
             decrementSong={this.decrementSong}
