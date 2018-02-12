@@ -16,6 +16,7 @@ class App extends Component {
     this.submitTempo = this.submitTempo.bind(this);
     this.tapTempo = this.tapTempo.bind(this);
     this.tempoLogic = this.tempoLogic.bind(this);
+    this.playPreview = this.playPreview.bind(this);
   }
   state = {
     accessToken: '',
@@ -26,17 +27,23 @@ class App extends Component {
     tempoSubmitted: false,
     tempos: [],
     taps: [],
+    currentSongUrl: '',
+    isPlaying: false,
   };
 
   incrementSong() {
     if (this.state.currentSongIndex < this.state.playlist.length - 1) {
-      this.setState({ currentSongIndex: this.state.currentSongIndex + 1 });
+      this.setState({ currentSongIndex: this.state.currentSongIndex + 1 }, () => {
+        this.setState({ currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url });
+      });
     }
   }
 
   decrementSong() {
     if (this.state.currentSongIndex > 0) {
-      this.setState({ currentSongIndex: this.state.currentSongIndex - 1 });
+      this.setState({ currentSongIndex: this.state.currentSongIndex - 1 }, () => {
+        this.setState({ currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url });
+      });
     }
   }
 
@@ -51,7 +58,9 @@ class App extends Component {
     )
       .then(res => res.json())
       .then(data => {
-        this.setState({ playlist: data.tracks });
+        this.setState({ playlist: data.tracks }, () => {
+          this.setState({ currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url });
+        });
         this.setState({ tempoSubmitted: true });
       });
   }
@@ -87,8 +96,20 @@ class App extends Component {
     const accessToken = parsed.access_token;
     this.setState({ accessToken });
     if (accessToken) this.setState({ loggedIn: true });
-    document.body.addEventListener('keyup', this.tempoLogic, false);
-    window.addEventListener('touchstart', this.tempoLogic, false);
+    document.body.addEventListener('keyup', this.tempoLogic);
+    window.addEventListener('touchstart', this.tempoLogic);
+  }
+
+  playPreview() {
+    if (!this.state.isPlaying) {
+      this.setState({ isPlaying: true }, () => {
+        this.refs.audioRef.play();
+      });
+    } else {
+      this.setState({ isPlaying: false }, () => {
+        this.refs.audioRef.pause();
+      });
+    }
   }
 
   componentDidMount() {
@@ -109,10 +130,13 @@ class App extends Component {
             artist={this.state.playlist[this.state.currentSongIndex].artists[0].name}
             album={this.state.playlist[this.state.currentSongIndex].album.name}
             songTitle={this.state.playlist[this.state.currentSongIndex].name}
+            playPreview={this.playPreview}
             incrementSong={this.incrementSong}
             decrementSong={this.decrementSong}
+            isPlaying={this.state.isPlaying}
           />
         )}
+        <audio ref="audioRef" src={this.state.currentSongUrl} style={{ display: 'none' }} />
       </div>
     );
   }
