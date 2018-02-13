@@ -50,9 +50,6 @@ class App extends Component {
   componentWillMount() {}
 
   componentDidMount() {
-    if (document.cookie !== null || document.cookie === undefined) {
-      this.setState({ loggedIn: true });
-    }
     this.tapTempo();
   }
 
@@ -140,7 +137,6 @@ class App extends Component {
     const parsed = queryString.parse(window.location.search);
     const accessToken = parsed.access_token;
     this.setState({ accessToken });
-    document.cookie = `accessToken=${accessToken};max-age=${600}`;
     if (accessToken) this.setState({ loggedIn: true });
     document.body.addEventListener('keyup', this.tempoLogic);
     window.addEventListener('touchstart', this.tempoLogic);
