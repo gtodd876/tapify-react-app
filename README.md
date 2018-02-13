@@ -1,6 +1,6 @@
 <h1 align="center"> Tapify </h1> <br>
 <p align="center">
-    <img alt="Tapify" title="Tapify" src="uc?id=13g0Hu4T4R-aClJzPysSN9uQ3xcKuD9P-">
+    <img alt="Tapify" title="Tapify" src="https://drive.google.com/uc?id=13g0Hu4T4R-aClJzPysSN9uQ3xcKuD9P-">
 </p> 
 
 <p align="center">
