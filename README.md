@@ -1,3 +1,22 @@
+<h1 align="center"> Tapify </h1> <br>
+<p align="center">
+    <img alt="Tapify" title="Tapify" src="https://drive.google.com/uc?id=1eQMn36MPdSOOlD4fTTKwxB3xMj17Y7O-">
+</p> 
+
+<p align="center">
+  Tap tempo powered music playlist creator. Powered by Spotify API.
+</p>
+
+## Introduction
+ I decided to take on this project to build a usefulfun application that uses the spotify API. The idea is to tap out your tempo, my app will calculate the average and use Spotify's Recommendation API endpoint to gather songs at your target tempo.
+ 
+Feel free to send me feedback on [Twitter](https://twitter.com/gtodd876). 
+
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
