@@ -47,6 +47,15 @@ class App extends Component {
     });
   }
 
+  componentWillMount() {}
+
+  componentDidMount() {
+    if (document.cookie !== null || document.cookie === undefined) {
+      this.setState({ loggedIn: true });
+    }
+    this.tapTempo();
+  }
+
   incrementSong() {
     this.audioRef.pause();
     this.setState({ isPlaying: false });
@@ -93,6 +102,11 @@ class App extends Component {
           });
         });
         this.setState({ tempoSubmitted: true });
+      })
+      .catch(e => {
+        window.location = window.location.href.includes('localhost')
+          ? 'http://localhost:3000'
+          : 'https://warm-escarpment-43459.herokuapp.com';
       });
   }
 
@@ -126,6 +140,7 @@ class App extends Component {
     const parsed = queryString.parse(window.location.search);
     const accessToken = parsed.access_token;
     this.setState({ accessToken });
+    document.cookie = `accessToken=${accessToken};max-age=${600}`;
     if (accessToken) this.setState({ loggedIn: true });
     document.body.addEventListener('keyup', this.tempoLogic);
     window.addEventListener('touchstart', this.tempoLogic);
@@ -139,10 +154,6 @@ class App extends Component {
       this.setState({ isPlaying: false });
       this.audioRef.pause();
     }
-  }
-
-  componentDidMount() {
-    this.tapTempo();
   }
 
   render() {
