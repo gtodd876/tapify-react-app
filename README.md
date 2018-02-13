@@ -8,7 +8,7 @@
 </p>
 
 ## Introduction
- I decided to take on this project to build a fun application that uses the spotify API. The idea is while tapping out your tempo, my app will calculate the average, and use Spotify's Recommendation API endpoint to gather songs at your target tempo.
+ I decided to take on this project to build a fun application that uses the spotify API. The idea is that while tapping out your tempo, my app will calculate the average, and use Spotify's Recommendation API endpoint to gather songs at your target tempo.
  
 Feel free to send me feedback on [Twitter](https://twitter.com/gtodd876). 
 
