@@ -78,7 +78,7 @@ class App extends Component {
 
   submitTempo() {
     fetch(
-      `https://api.spotify.com/v1/recommendations?limit=4&market=US&seed_genres=electronic&target_tempo=${
+      `https://api.spotify.com/v1/recommendations?limit=7&market=US&seed_genres=electronic&target_tempo=${
         this.state.averageTempo
       }`,
       {

@@ -3,10 +3,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.App {
-  text-align: center;
-}
-
 .bpm-display {
   display: contents;
 }
