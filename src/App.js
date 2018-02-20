@@ -122,9 +122,13 @@ class App extends Component {
       e.type === 'mousedown'
     ) {
       this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
-      document.querySelector('.tap-btn').classList.toggle('tapped');
-      setTimeout(() => {
+      if (document.querySelector('.tap-btn')) {
         document.querySelector('.tap-btn').classList.toggle('tapped');
+      }
+      setTimeout(() => {
+        if (document.querySelector('.tap-btn')) {
+          document.querySelector('.tap-btn').classList.toggle('tapped');
+        }
       }, 125);
     }
     if (this.state.tempos.length >= 2) {
