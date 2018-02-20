@@ -140,7 +140,9 @@ class App extends Component {
       });
     }
     if (this.state.taps.length >= 2 && e.keyCode !== 82 && !this.state.tempoSubmitted) {
-      let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
+      let average =
+        (this.state.taps.reduce((a, b) => a + b, 0) - this.state.taps[this.state.taps.length - 1]) /
+        this.state.taps.length;
       let bpm = (60000 / average).toFixed(2);
       this.setState({ averageTempo: bpm });
     }
@@ -174,7 +176,8 @@ class App extends Component {
         {!this.state.loggedIn && <SpotifyButton />}
         {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
         {this.state.loggedIn && !this.state.tempoSubmitted && <TapButton />}
-        {this.state.averageTempo > 0 && <BpmDisplay tempo={this.state.averageTempo} />}
+        {this.state.averageTempo > 0 &&
+          this.state.averageTempo < 190 && <BpmDisplay tempo={this.state.averageTempo} />}
         {this.state.averageTempo > 0 &&
           !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
         {this.state.playlist.length > 0 && (
