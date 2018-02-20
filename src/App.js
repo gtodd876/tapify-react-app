@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Title from './components/Title/Title';
 import Instructions from './components/Instructions/Instructions';
+import TapButton from './components/TapButton/TapButton';
 import SpotifyButton from './components/SpotifyButton/SpotifyButton';
 import TempoButton from './components/TempoButton/TempoButton';
 import BpmDisplay from './components/BpmDisplay/BpmDisplay';
@@ -115,14 +116,23 @@ class App extends Component {
       this.setState({ averageTempo: 0 });
     }
     //calculate tempo
-    if ((e.keyCode === 32 && e.keyCode !== 82) || e.type === 'touchstart') {
+    if (
+      (e.keyCode === 32 && e.keyCode !== 82) ||
+      e.type === 'touchstart' ||
+      e.type === 'mousedown'
+    ) {
       this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
+      document.querySelector('.tap-btn').classList.toggle('tapped');
+      setTimeout(() => {
+        document.querySelector('.tap-btn').classList.toggle('tapped');
+      }, 125);
     }
     if (this.state.tempos.length >= 2) {
       this.setState({
         taps: [
           ...this.state.taps,
-          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2],
+          this.state.tempos[this.state.tempos.length - 1] -
+            this.state.tempos[this.state.tempos.length - 2],
         ],
       });
     }
@@ -155,11 +165,13 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Title />
+        {!this.state.loggedIn && <Title />}
         {!this.state.loggedIn && <SpotifyButton />}
         {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
-        {this.state.averageTempo > 0 && window.innerWidth >= 500 && <BpmDisplay tempo={this.state.averageTempo} />}
-        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
+        {this.state.loggedIn && !this.state.tempoSubmitted && <TapButton />}
+        {this.state.averageTempo > 0 && <BpmDisplay tempo={this.state.averageTempo} />}
+        {this.state.averageTempo > 0 &&
+          !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
         {this.state.playlist.length > 0 && (
           <Playlist
             image={this.state.playlist[this.state.currentSongIndex].album.images[1].url}

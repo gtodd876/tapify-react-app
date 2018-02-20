@@ -12,3 +12,7 @@
     display: none;
   }
 }
+
+.tapped {
+  background-color: #6fe899;
+}
