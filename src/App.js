@@ -117,9 +117,8 @@ class App extends Component {
     }
     //calculate tempo
     if (
-      (e.keyCode === 32 && e.keyCode !== 82) ||
-      e.type === 'touchstart' ||
-      e.type === 'mousedown'
+      (e.keyCode === 32 && e.keyCode !== 82 && !this.state.tempoSubmitted) ||
+      (e.type === 'touchstart' && !this.state.tempoSubmitted)
     ) {
       this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
       if (document.querySelector('.tap-btn')) {
@@ -131,7 +130,7 @@ class App extends Component {
         }
       }, 125);
     }
-    if (this.state.tempos.length >= 2) {
+    if (this.state.tempos.length >= 2 && !this.state.tempoSubmitted) {
       this.setState({
         taps: [
           ...this.state.taps,
@@ -140,7 +139,7 @@ class App extends Component {
         ],
       });
     }
-    if (this.state.taps.length >= 2 && e.keyCode !== 82) {
+    if (this.state.taps.length >= 2 && e.keyCode !== 82 && !this.state.tempoSubmitted) {
       let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
       let bpm = (60000 / average).toFixed(2);
       this.setState({ averageTempo: bpm });
@@ -152,8 +151,10 @@ class App extends Component {
     const accessToken = parsed.access_token;
     this.setState({ accessToken });
     if (accessToken) this.setState({ loggedIn: true });
-    document.body.addEventListener('keyup', this.tempoLogic);
-    window.addEventListener('touchstart', this.tempoLogic);
+    if (!this.state.tempoSubmitted) {
+      document.body.addEventListener('keyup', this.tempoLogic);
+      window.addEventListener('touchstart', this.tempoLogic);
+    }
   }
 
   playPreview() {
