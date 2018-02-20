@@ -18,9 +18,13 @@ class App extends Component {
     this.decrementSong = this.decrementSong.bind(this);
     this.submitTempo = this.submitTempo.bind(this);
     this.tapTempo = this.tapTempo.bind(this);
-    this.tempoLogic = this.tempoLogic.bind(this);
+    this.tempoKeyup = this.tempoKeyup.bind(this);
     this.playPreview = this.playPreview.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.resetTempo = this.resetState.bind(this);
+    this.calculateDelayTime = this.calculateDelayTime.bind(this);
+    this.calculateAvgTempo = this.calculateAvgTempo.bind(this);
+    this.tempoTouch = this.tempoTouch.bind(this);
   }
   state = {
     accessToken: '',
@@ -47,8 +51,6 @@ class App extends Component {
       isPlaying: false,
     });
   }
-
-  componentWillMount() {}
 
   componentDidMount() {
     this.tapTempo();
@@ -108,28 +110,24 @@ class App extends Component {
       });
   }
 
-  tempoLogic(e) {
-    //reset tempo
-    if (e.keyCode === 82) {
-      this.setState({ tempos: [] });
-      this.setState({ taps: [] });
-      this.setState({ averageTempo: 0 });
+  tapButtonBlink() {
+    if (document.querySelector('.tap-btn')) {
+      document.querySelector('.tap-btn').classList.toggle('tapped');
     }
-    //calculate tempo
-    if (
-      (e.keyCode === 32 && e.keyCode !== 82 && !this.state.tempoSubmitted) ||
-      (e.type === 'touchstart' && !this.state.tempoSubmitted)
-    ) {
-      this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
+    setTimeout(() => {
       if (document.querySelector('.tap-btn')) {
         document.querySelector('.tap-btn').classList.toggle('tapped');
       }
-      setTimeout(() => {
-        if (document.querySelector('.tap-btn')) {
-          document.querySelector('.tap-btn').classList.toggle('tapped');
-        }
-      }, 125);
-    }
+    }, 125);
+  }
+
+  resetTempo() {
+    this.setState({ tempos: [] });
+    this.setState({ taps: [] });
+    this.setState({ averageTempo: 0 });
+  }
+
+  calculateDelayTime() {
     if (this.state.tempos.length >= 2 && !this.state.tempoSubmitted) {
       this.setState({
         taps: [
@@ -139,13 +137,33 @@ class App extends Component {
         ],
       });
     }
-    if (this.state.taps.length >= 2 && e.keyCode !== 82 && !this.state.tempoSubmitted) {
-      let average =
-        (this.state.taps.reduce((a, b) => a + b, 0) - this.state.taps[this.state.taps.length - 1]) /
-        this.state.taps.length;
+  }
+
+  calculateAvgTempo(keyCode = 32) {
+    if (this.state.taps.length >= 2 && keyCode !== 82 && !this.state.tempoSubmitted) {
+      let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
       let bpm = (60000 / average).toFixed(2);
       this.setState({ averageTempo: bpm });
     }
+  }
+
+  tempoKeyup({ keyCode }) {
+    if (keyCode === 82) {
+      this.resetTempo();
+    }
+    if (keyCode === 32 && keyCode !== 82 && !this.state.tempoSubmitted) {
+      this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
+      this.tapButtonBlink();
+    }
+    this.calculateDelayTime();
+    this.calculateAvgTempo(keyCode);
+  }
+
+  tempoTouch() {
+    this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
+    this.tapButtonBlink();
+    this.calculateDelayTime();
+    this.calculateAvgTempo();
   }
 
   tapTempo() {
@@ -154,8 +172,7 @@ class App extends Component {
     this.setState({ accessToken });
     if (accessToken) this.setState({ loggedIn: true });
     if (!this.state.tempoSubmitted) {
-      document.body.addEventListener('keyup', this.tempoLogic);
-      window.addEventListener('touchstart', this.tempoLogic);
+      document.body.addEventListener('keyup', this.tempoKeyup);
     }
   }
 
@@ -175,7 +192,8 @@ class App extends Component {
         {!this.state.loggedIn && <Title />}
         {!this.state.loggedIn && <SpotifyButton />}
         {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
-        {this.state.loggedIn && !this.state.tempoSubmitted && <TapButton />}
+        {this.state.loggedIn &&
+          !this.state.tempoSubmitted && <TapButton tempoTouch={this.tempoTouch} />}
         {this.state.averageTempo > 0 &&
           this.state.averageTempo < 190 && <BpmDisplay tempo={this.state.averageTempo} />}
         {this.state.averageTempo > 0 &&
