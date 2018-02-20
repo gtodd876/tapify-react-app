@@ -18,3 +18,9 @@
   background-color: #1ed760;
   cursor: pointer;
 }
+
+@media (max-width: 500px) {
+  .try-again {
+    margin-top: 5px;
+  }
+}
