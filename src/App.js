@@ -104,6 +104,7 @@ class App extends Component {
         this.setState({ tempoSubmitted: true });
       })
       .catch(e => {
+        console.log(e);
         window.location = window.location.href.includes('localhost')
           ? 'http://localhost:3000'
           : 'https://wizardly-villani-b65c20.netlify.com';
