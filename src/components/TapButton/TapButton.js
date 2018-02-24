@@ -3,14 +3,12 @@ import './TapButton.css';
 
 const TapButton = props => (
   <div className="click-me">
-    <button
-      className="tap-btn"
-      onClick={() => props.tempoTouch()}
-      onTouchStart={() => props.tempoTouch()}
-    >
+    <button className="tap-btn" onClick={() => props.tempoTouch()}>
       Tap
     </button>
   </div>
 );
 
 export default TapButton;
+
+//onTouchStart={() => props.tempoTouch()}
