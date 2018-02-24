@@ -106,7 +106,7 @@ class App extends Component {
       .catch(e => {
         window.location = window.location.href.includes('localhost')
           ? 'http://localhost:3000'
-          : 'https://warm-escarpment-43459.herokuapp.com';
+          : 'https://wizardly-villani-b65c20.netlify.com';
       });
   }
 
@@ -132,8 +132,7 @@ class App extends Component {
       this.setState({
         taps: [
           ...this.state.taps,
-          this.state.tempos[this.state.tempos.length - 1] -
-            this.state.tempos[this.state.tempos.length - 2],
+          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2],
         ],
       });
     }
@@ -192,12 +191,9 @@ class App extends Component {
         {!this.state.loggedIn && <Title />}
         {!this.state.loggedIn && <SpotifyButton />}
         {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
-        {this.state.loggedIn &&
-          !this.state.tempoSubmitted && <TapButton tempoTouch={this.tempoTouch} />}
-        {this.state.averageTempo > 0 &&
-          this.state.averageTempo < 190 && <BpmDisplay tempo={this.state.averageTempo} />}
-        {this.state.averageTempo > 0 &&
-          !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
+        {this.state.loggedIn && !this.state.tempoSubmitted && <TapButton tempoTouch={this.tempoTouch} />}
+        {this.state.averageTempo > 0 && this.state.averageTempo < 190 && <BpmDisplay tempo={this.state.averageTempo} />}
+        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
         {this.state.playlist.length > 0 && (
           <Playlist
             image={this.state.playlist[this.state.currentSongIndex].album.images[1].url}
