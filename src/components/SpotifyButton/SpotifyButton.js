@@ -6,7 +6,7 @@ const SpotifyButton = () => (
     onClick={() => {
       window.location = window.location.href.includes('localhost')
         ? 'http://localhost:8888/login'
-        : 'https://festive-yonath-bd0637.netlify.com';
+        : 'https://festive-yonath-bd0637.netlify.com/login';
     }}
     className="login"
     id="login-button"
