@@ -12,20 +12,6 @@ import queryString from 'query-string';
 import './App.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.incrementSong = this.incrementSong.bind(this);
-    this.decrementSong = this.decrementSong.bind(this);
-    this.submitTempo = this.submitTempo.bind(this);
-    this.tapTempo = this.tapTempo.bind(this);
-    this.tempoKeyup = this.tempoKeyup.bind(this);
-    this.playPreview = this.playPreview.bind(this);
-    this.resetState = this.resetState.bind(this);
-    this.resetTempo = this.resetState.bind(this);
-    this.calculateDelayTime = this.calculateDelayTime.bind(this);
-    this.calculateAvgTempo = this.calculateAvgTempo.bind(this);
-    this.tempoTouch = this.tempoTouch.bind(this);
-  }
   state = {
     accessToken: '',
     loggedIn: false,
@@ -36,10 +22,10 @@ class App extends Component {
     tempos: [],
     taps: [],
     currentSongUrl: null,
-    isPlaying: false,
+    isPlaying: false
   };
 
-  resetState() {
+  resetState = () => {
     this.setState({
       averageTempo: 0,
       playlist: [],
@@ -48,57 +34,57 @@ class App extends Component {
       tempos: [],
       taps: [],
       currentSongUrl: null,
-      isPlaying: false,
+      isPlaying: false
     });
-  }
+  };
 
   componentDidMount() {
     this.tapTempo();
   }
 
-  incrementSong() {
+  incrementSong = () => {
     this.audioRef.pause();
     this.setState({ isPlaying: false });
     if (this.state.currentSongIndex < this.state.playlist.length - 1) {
       this.setState(
         {
-          currentSongIndex: this.state.currentSongIndex + 1,
+          currentSongIndex: this.state.currentSongIndex + 1
         },
         () => {
           this.setState({
-            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url,
+            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url
           });
         }
       );
     }
-  }
+  };
 
-  decrementSong() {
+  decrementSong = () => {
     this.audioRef.pause();
     this.setState({ isPlaying: false });
     if (this.state.currentSongIndex > 0) {
       this.setState({ currentSongIndex: this.state.currentSongIndex - 1 }, () => {
         this.setState({
-          currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url,
+          currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url
         });
       });
     }
-  }
+  };
 
-  submitTempo() {
+  submitTempo = () => {
     fetch(
       `https://api.spotify.com/v1/recommendations?limit=7&market=US&seed_genres=electronic&target_tempo=${
         this.state.averageTempo
       }`,
       {
-        headers: { Authorization: 'Bearer ' + this.state.accessToken },
+        headers: { Authorization: 'Bearer ' + this.state.accessToken }
       }
     )
       .then(res => res.json())
       .then(data => {
         this.setState({ playlist: data.tracks }, () => {
           this.setState({
-            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url,
+            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url
           });
         });
         this.setState({ tempoSubmitted: true });
@@ -109,9 +95,9 @@ class App extends Component {
           ? 'http://localhost:3000'
           : 'https://wizardly-villani-b65c20.netlify.com';
       });
-  }
+  };
 
-  tapButtonBlink() {
+  tapButtonBlink = () => {
     if (document.querySelector('.tap-btn')) {
       document.querySelector('.tap-btn').classList.toggle('tapped');
     }
@@ -120,34 +106,34 @@ class App extends Component {
         document.querySelector('.tap-btn').classList.toggle('tapped');
       }
     }, 125);
-  }
+  };
 
-  resetTempo() {
+  resetTempo = () => {
     this.setState({ tempos: [] });
     this.setState({ taps: [] });
     this.setState({ averageTempo: 0 });
-  }
+  };
 
-  calculateDelayTime() {
+  calculateDelayTime = () => {
     if (this.state.tempos.length >= 2 && !this.state.tempoSubmitted) {
       this.setState({
         taps: [
           ...this.state.taps,
-          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2],
-        ],
+          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2]
+        ]
       });
     }
-  }
+  };
 
-  calculateAvgTempo(keyCode = 32) {
+  calculateAvgTempo = (keyCode = 32) => {
     if (this.state.taps.length >= 2 && keyCode !== 82 && !this.state.tempoSubmitted) {
       let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
       let bpm = (60000 / average).toFixed(2);
       this.setState({ averageTempo: bpm });
     }
-  }
+  };
 
-  tempoKeyup({ keyCode }) {
+  tempoKeyup = ({ keyCode }) => {
     if (keyCode === 82) {
       this.resetTempo();
     }
@@ -157,16 +143,16 @@ class App extends Component {
     }
     this.calculateDelayTime();
     this.calculateAvgTempo(keyCode);
-  }
+  };
 
-  tempoTouch() {
+  tempoTouch = () => {
     this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
     this.tapButtonBlink();
     this.calculateDelayTime();
     this.calculateAvgTempo();
-  }
+  };
 
-  tapTempo() {
+  tapTempo = () => {
     const parsed = queryString.parse(window.location.search);
     const accessToken = parsed.access_token;
     this.setState({ accessToken });
@@ -174,9 +160,9 @@ class App extends Component {
     if (!this.state.tempoSubmitted) {
       document.body.addEventListener('keyup', this.tempoKeyup);
     }
-  }
+  };
 
-  playPreview() {
+  playPreview = () => {
     if (!this.state.isPlaying && this.state.currentSongUrl !== null) {
       this.setState({ isPlaying: true });
       this.audioRef.play();
@@ -184,7 +170,7 @@ class App extends Component {
       this.setState({ isPlaying: false });
       this.audioRef.pause();
     }
-  }
+  };
 
   render() {
     return (
