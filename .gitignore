@@ -1,5 +1,5 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
-
+/tapify-node-backend
 # dependencies
 /node_modules
 
@@ -19,3 +19,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+tapify-node-backend
+tapify-node-backend
