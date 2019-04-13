@@ -14,15 +14,15 @@ import './App.css';
 class App extends Component {
   state = {
     accessToken: '',
-    loggedIn: false,
     averageTempo: 0,
-    playlist: [],
     currentSongIndex: 0,
-    tempoSubmitted: false,
-    tempos: [],
-    taps: [],
     currentSongUrl: null,
-    isPlaying: false
+    isPlaying: false,
+    loggedIn: false,
+    playlist: [],
+    taps: [],
+    tempos: [],
+    tempoSubmitted: false
   };
 
   resetState = () => {

@@ -1,10 +1,11 @@
 import React from 'react';
 import './TryAgainButton.css';
+import PropTypes from 'prop-types';
 
-const TryAgainButton = props => (
+const TryAgainButton = ({ resetState }) => (
   <button
     onClick={() => {
-      props.resetState();
+      resetState();
     }}
     className="try-again"
     id="try-again-button"
@@ -12,5 +13,9 @@ const TryAgainButton = props => (
     Try It Out Again
   </button>
 );
+
+TryAgainButton.propTypes = {
+  resetState: PropTypes.func
+};
 
 export default TryAgainButton;

@@ -1,14 +1,17 @@
 import React from 'react';
 import './TapButton.css';
+import PropTypes from 'prop-types';
 
-const TapButton = props => (
+const TapButton = ({ tempoTouch }) => (
   <div className="click-me">
-    <button className="tap-btn" onClick={() => props.tempoTouch()}>
+    <button className="tap-btn" onClick={() => tempoTouch()}>
       Tap
     </button>
   </div>
 );
 
-export default TapButton;
+TapButton.propTypes = {
+  tempoTouch: PropTypes.func
+};
 
-//onTouchStart={() => props.tempoTouch()}
+export default TapButton;

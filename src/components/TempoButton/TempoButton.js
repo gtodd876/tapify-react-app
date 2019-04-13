@@ -1,10 +1,17 @@
 import React from 'react';
 import './TempoButton.css';
+import PropTypes from 'prop-types';
 
-const TempoButton = props => (
-  <button onClick={() => props.submitTempo(props.tempo, props.token)} className="submit-tempo">
+const TempoButton = ({ tempo, token, submitTempo }) => (
+  <button onClick={() => submitTempo(tempo, token)} className="submit-tempo">
     Submit Tempo
   </button>
 );
+
+TempoButton.propTypes = {
+  tempo: PropTypes.number,
+  token: PropTypes.string,
+  submitTempo: PropTypes.func
+};
 
 export default TempoButton;

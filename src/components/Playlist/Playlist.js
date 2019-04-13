@@ -5,6 +5,7 @@ import MdPlayCircleOutline from 'react-icons/lib/md/play-circle-outline';
 import MdPauseCircleOutline from 'react-icons/lib/md/pause-circle-outline';
 import Pagination from '../Pagination/Pagination';
 import './Playlist.css';
+import PropTypes from 'prop-types';
 
 const Playlist = props => {
   return (
@@ -41,6 +42,19 @@ const Playlist = props => {
       })}
     </div>
   );
+};
+
+Playlist.propTypes = {
+  album: PropTypes.string,
+  artist: PropTypes.string,
+  currentSongIndex: PropTypes.number,
+  decrementSong: PropTypes.func,
+  image: PropTypes.string,
+  incrementSong: PropTypes.func,
+  playlist: PropTypes.array,
+  playPreview: PropTypes.func,
+  songTitle: PropTypes.string,
+  songUrl: PropTypes.string
 };
 
 export default Playlist;
