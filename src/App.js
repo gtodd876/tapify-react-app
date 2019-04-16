@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Title from './components/Title/Title';
 import Instructions from './components/Instructions/Instructions';
 import TapButton from './components/TapButton/TapButton';
@@ -11,83 +11,76 @@ import TryAgainButton from './components/TryAgainButton/TryAgainButton';
 import queryString from 'query-string';
 import './App.css';
 
-class App extends Component {
-  state = {
-    accessToken: '',
-    averageTempo: 0,
-    currentSongIndex: 0,
-    currentSongUrl: null,
-    isPlaying: false,
-    loggedIn: false,
-    playlist: [],
-    taps: [],
-    tempos: [],
-    tempoSubmitted: false
+function App() {
+  let audioRef = React.createRef();
+
+  const [accessToken, setAccessToken] = useState('');
+  const [averageTempo, setAverageTempo] = useState(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [currentSongUrl, setCurrentSongUrl] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [playlist, setPlaylist] = useState([]);
+  const [taps, setTaps] = useState([]);
+  const [tempos, setTempos] = useState([]);
+  const [tempoSubmitted, setTempoSubmitted] = useState(false);
+
+  //ComponentDidMount
+  useEffect(() => {
+    const parsed = queryString.parse(window.location.search);
+    const accessToken = parsed.access_token;
+    setAccessToken(accessToken);
+    if (accessToken) setLoggedIn(true);
+    if (!tempoSubmitted) {
+      document.body.addEventListener('keyup', tempoKeyup);
+    }
+  }, []);
+
+  //playlist updated
+  useEffect(() => {
+    if (playlist.length > 0) {
+      setCurrentSongUrl(playlist[currentSongIndex].preview_url);
+    }
+  }, [playlist, currentSongIndex]);
+
+  const resetState = () => {
+    setAverageTempo(0);
+    setPlaylist([]);
+    setCurrentSongIndex(0);
+    setTempoSubmitted(false);
+    setTempos([]);
+    setTaps([]);
+    setCurrentSongUrl(null);
+    setIsPlaying(false);
   };
 
-  resetState = () => {
-    this.setState({
-      averageTempo: 0,
-      playlist: [],
-      currentSongIndex: 0,
-      tempoSubmitted: false,
-      tempos: [],
-      taps: [],
-      currentSongUrl: null,
-      isPlaying: false
-    });
-  };
-
-  componentDidMount() {
-    this.tapTempo();
-  }
-
-  incrementSong = () => {
-    this.audioRef.pause();
-    this.setState({ isPlaying: false });
-    if (this.state.currentSongIndex < this.state.playlist.length - 1) {
-      this.setState(
-        {
-          currentSongIndex: this.state.currentSongIndex + 1
-        },
-        () => {
-          this.setState({
-            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url
-          });
-        }
-      );
+  const incrementSong = () => {
+    audioRef.pause();
+    setIsPlaying(false);
+    if (currentSongIndex < playlist.length - 1) {
+      setCurrentSongIndex(currentSongIndex + 1);
     }
   };
 
-  decrementSong = () => {
-    this.audioRef.pause();
-    this.setState({ isPlaying: false });
-    if (this.state.currentSongIndex > 0) {
-      this.setState({ currentSongIndex: this.state.currentSongIndex - 1 }, () => {
-        this.setState({
-          currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url
-        });
-      });
+  const decrementSong = () => {
+    audioRef.pause();
+    setIsPlaying(false);
+    if (currentSongIndex > 0) {
+      setCurrentSongIndex(currentSongIndex - 1);
     }
   };
 
-  submitTempo = () => {
+  const submitTempo = () => {
     fetch(
-      `https://api.spotify.com/v1/recommendations?limit=7&market=US&seed_genres=electronic&target_tempo=${
-        this.state.averageTempo
-      }`,
+      `https://api.spotify.com/v1/recommendations?limit=7&market=US&seed_genres=electronic&target_tempo=${averageTempo}`,
       {
-        headers: { Authorization: 'Bearer ' + this.state.accessToken }
+        headers: { Authorization: 'Bearer ' + accessToken }
       }
     )
       .then(res => res.json())
       .then(data => {
-        this.setState({ playlist: data.tracks }, () => {
-          this.setState({
-            currentSongUrl: this.state.playlist[this.state.currentSongIndex].preview_url
-          });
-        });
-        this.setState({ tempoSubmitted: true });
+        setPlaylist(data.tracks);
+        setTempoSubmitted(true);
       })
       .catch(e => {
         console.log(e);
@@ -97,7 +90,7 @@ class App extends Component {
       });
   };
 
-  tapButtonBlink = () => {
+  const tapButtonBlink = () => {
     if (document.querySelector('.tap-btn')) {
       document.querySelector('.tap-btn').classList.toggle('tapped');
     }
@@ -105,110 +98,103 @@ class App extends Component {
       if (document.querySelector('.tap-btn')) {
         document.querySelector('.tap-btn').classList.toggle('tapped');
       }
-    }, 125);
+    }, 100);
   };
 
-  resetTempo = () => {
-    this.setState({ tempos: [] });
-    this.setState({ taps: [] });
-    this.setState({ averageTempo: 0 });
+  const tapButtonDown = e => {
+    e.target.classList.add('tapped');
   };
 
-  calculateDelayTime = () => {
-    if (this.state.tempos.length >= 2 && !this.state.tempoSubmitted) {
-      this.setState({
-        taps: [
-          ...this.state.taps,
-          this.state.tempos[this.state.tempos.length - 1] - this.state.tempos[this.state.tempos.length - 2]
-        ]
-      });
+  const tapButtonUp = e => {
+    e.target.classList.remove('tapped');
+  };
+
+  const resetTempo = () => {
+    setTempos([]);
+    setTaps([]);
+    setAverageTempo(0);
+  };
+
+  const calculateDelayTime = () => {
+    if (tempos.length >= 2 && !tempoSubmitted) {
+      setTaps([...taps, tempos[tempos.length - 1] - tempos[tempos.length - 2]]);
     }
   };
 
-  calculateAvgTempo = (keyCode = 32) => {
-    if (this.state.taps.length >= 2 && keyCode !== 82 && !this.state.tempoSubmitted) {
-      let average = this.state.taps.reduce((a, b) => a + b, 0) / this.state.taps.length;
+  const calculateAvgTempo = (keyCode = 32) => {
+    if (taps.length >= 2 && keyCode !== 82 && !tempoSubmitted) {
+      let average = taps.reduce((a, b) => a + b, 0) / taps.length;
       let bpm = (60000 / average).toFixed(2);
-      this.setState({ averageTempo: bpm });
+      setAverageTempo(bpm);
     }
   };
 
-  tempoKeyup = ({ keyCode }) => {
+  const tempoKeyup = ({ keyCode }) => {
     if (keyCode === 82) {
-      this.resetTempo();
+      resetTempo();
     }
-    if (keyCode === 32 && keyCode !== 82 && !this.state.tempoSubmitted) {
-      this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
-      this.tapButtonBlink();
+    if (keyCode === 32 && keyCode !== 82 && !tempoSubmitted) {
+      setTempos([...tempos, new Date().getTime()]);
+      tapButtonBlink();
     }
-    this.calculateDelayTime();
-    this.calculateAvgTempo(keyCode);
+    calculateDelayTime();
+    calculateAvgTempo(keyCode);
   };
 
-  tempoTouch = () => {
-    this.setState({ tempos: [...this.state.tempos, new Date().getTime()] });
-    this.tapButtonBlink();
-    this.calculateDelayTime();
-    this.calculateAvgTempo();
+  const tempoTouch = () => {
+    setTempos([...tempos, new Date().getTime()]);
+    tapButtonBlink();
+    calculateDelayTime();
+    calculateAvgTempo();
   };
 
-  tapTempo = () => {
-    const parsed = queryString.parse(window.location.search);
-    const accessToken = parsed.access_token;
-    this.setState({ accessToken });
-    if (accessToken) this.setState({ loggedIn: true });
-    if (!this.state.tempoSubmitted) {
-      document.body.addEventListener('keyup', this.tempoKeyup);
-    }
-  };
-
-  playPreview = () => {
-    if (!this.state.isPlaying && this.state.currentSongUrl !== null) {
-      this.setState({ isPlaying: true });
-      this.audioRef.play();
+  const playPreview = () => {
+    if (!isPlaying && currentSongUrl !== null) {
+      setIsPlaying(true);
+      audioRef.play();
     } else {
-      this.setState({ isPlaying: false });
-      this.audioRef.pause();
+      setIsPlaying(false);
+      audioRef.pause();
     }
   };
 
-  render() {
-    return (
-      <div className="App">
-        {!this.state.loggedIn && <Title />}
-        {!this.state.loggedIn && <SpotifyButton />}
-        {this.state.loggedIn && !this.state.tempoSubmitted && <Instructions />}
-        {this.state.loggedIn && !this.state.tempoSubmitted && <TapButton tempoTouch={this.tempoTouch} />}
-        {this.state.averageTempo > 0 && this.state.averageTempo < 190 && <BpmDisplay tempo={this.state.averageTempo} />}
-        {this.state.averageTempo > 0 && !this.state.tempoSubmitted && <TempoButton submitTempo={this.submitTempo} />}
-        {this.state.playlist.length > 0 && (
-          <Playlist
-            image={this.state.playlist[this.state.currentSongIndex].album.images[1].url}
-            artist={this.state.playlist[this.state.currentSongIndex].artists[0].name}
-            album={this.state.playlist[this.state.currentSongIndex].album.name}
-            songTitle={this.state.playlist[this.state.currentSongIndex].name}
-            songUrl={this.state.currentSongUrl}
-            playPreview={this.playPreview}
-            incrementSong={this.incrementSong}
-            decrementSong={this.decrementSong}
-            isPlaying={this.state.isPlaying}
-            currentSongIndex={this.state.currentSongIndex}
-            playlist={this.state.playlist}
-          />
-        )}
-        {this.state.currentSongUrl === null && this.state.tempoSubmitted && <NoSongPreview />}
-        <br />
-        {this.state.playlist.length > 0 && <TryAgainButton resetState={this.resetState} />}
-        <audio
-          ref={input => {
-            this.audioRef = input;
-          }}
-          src={this.state.currentSongUrl}
-          style={{ display: 'none' }}
+  return (
+    <div className="App">
+      {!loggedIn && <Title />}
+      {!loggedIn && <SpotifyButton />}
+      {loggedIn && !tempoSubmitted && <Instructions />}
+      {loggedIn && !tempoSubmitted && (
+        <TapButton tapButtonDown={tapButtonDown} tapButtonUp={tapButtonUp} tempoTouch={tempoTouch} />
+      )}
+      {averageTempo > 0 && averageTempo < 190 && <BpmDisplay tempo={averageTempo} />}
+      {averageTempo > 0 && !tempoSubmitted && <TempoButton submitTempo={submitTempo} />}
+      {playlist.length > 0 && (
+        <Playlist
+          image={playlist[currentSongIndex].album.images[1].url}
+          artist={playlist[currentSongIndex].artists[0].name}
+          album={playlist[currentSongIndex].album.name}
+          songTitle={playlist[currentSongIndex].name}
+          songUrl={currentSongUrl}
+          playPreview={playPreview}
+          incrementSong={incrementSong}
+          decrementSong={decrementSong}
+          isPlaying={isPlaying}
+          currentSongIndex={currentSongIndex}
+          playlist={playlist}
         />
-      </div>
-    );
-  }
+      )}
+      {currentSongUrl === null && tempoSubmitted && <NoSongPreview />}
+      <br />
+      {playlist.length > 0 && <TryAgainButton resetState={resetState} />}
+      <audio
+        ref={input => {
+          audioRef = input;
+        }}
+        src={currentSongUrl}
+        style={{ display: 'none' }}
+      />
+    </div>
+  );
 }
 
 export default App;
