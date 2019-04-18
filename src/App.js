@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Title from './components/Title/Title';
 import Instructions from './components/Instructions/Instructions';
 import TapButton from './components/TapButton/TapButton';
@@ -12,7 +12,7 @@ import queryString from 'query-string';
 import './App.css';
 
 function App() {
-  let audioRef = React.createRef();
+  const audioRef = useRef();
 
   const [accessToken, setAccessToken] = useState('');
   const [averageTempo, setAverageTempo] = useState(0);
@@ -55,7 +55,7 @@ function App() {
   };
 
   const incrementSong = () => {
-    audioRef.pause();
+    audioRef.current.pause();
     setIsPlaying(false);
     if (currentSongIndex < playlist.length - 1) {
       setCurrentSongIndex(currentSongIndex + 1);
@@ -63,7 +63,7 @@ function App() {
   };
 
   const decrementSong = () => {
-    audioRef.pause();
+    audioRef.current.pause();
     setIsPlaying(false);
     if (currentSongIndex > 0) {
       setCurrentSongIndex(currentSongIndex - 1);
@@ -88,17 +88,6 @@ function App() {
           ? 'http://localhost:3000'
           : 'https://wizardly-villani-b65c20.netlify.com';
       });
-  };
-
-  const tapButtonBlink = () => {
-    if (document.querySelector('.tap-btn')) {
-      document.querySelector('.tap-btn').classList.toggle('tapped');
-    }
-    setTimeout(() => {
-      if (document.querySelector('.tap-btn')) {
-        document.querySelector('.tap-btn').classList.toggle('tapped');
-      }
-    }, 100);
   };
 
   const tapButtonDown = e => {
@@ -135,7 +124,6 @@ function App() {
     }
     if (keyCode === 32 && keyCode !== 82 && !tempoSubmitted) {
       setTempos([...tempos, new Date().getTime()]);
-      tapButtonBlink();
     }
     calculateDelayTime();
     calculateAvgTempo(keyCode);
@@ -143,7 +131,6 @@ function App() {
 
   const tempoTouch = () => {
     setTempos([...tempos, new Date().getTime()]);
-    tapButtonBlink();
     calculateDelayTime();
     calculateAvgTempo();
   };
@@ -151,10 +138,10 @@ function App() {
   const playPreview = () => {
     if (!isPlaying && currentSongUrl !== null) {
       setIsPlaying(true);
-      audioRef.play();
+      audioRef.current.play();
     } else {
       setIsPlaying(false);
-      audioRef.pause();
+      audioRef.current.pause();
     }
   };
 
@@ -187,9 +174,7 @@ function App() {
       <br />
       {playlist.length > 0 && <TryAgainButton resetState={resetState} />}
       <audio
-        ref={input => {
-          audioRef = input;
-        }}
+        ref={audioRef}
         src={currentSongUrl}
         style={{ display: 'none' }}
       />
