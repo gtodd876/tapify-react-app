@@ -82,7 +82,7 @@ function App() {
       setTempoSubmitted(true);
     } catch (e) {
       console.log(e);
-      window.location = window.location.href.includes('localhost') ? 'http://localhost:3000' : 'http://tapify.fun';
+      window.location = window.location.href.includes('localhost') ? 'http://localhost:3000' : 'https://tapify.fun';
     }
   };
 
