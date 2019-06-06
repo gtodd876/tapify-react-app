@@ -6,7 +6,7 @@ const SpotifyButton = () => (
     onClick={() => {
       window.location = window.location.href.includes('localhost')
         ? 'http://localhost:8888/login'
-        : 'https://limitless-woodland-67549.herokuapp.com/login';
+        : 'https://tapify.azurewebsites.net/login';
     }}
     className="login"
     id="login-button"

@@ -34,9 +34,8 @@ function App() {
     if (!tempoSubmitted) {
       document.body.addEventListener('keyup', tempoKeyup);
     }
-  }, []);
+  }, [tempoKeyup, tempoSubmitted]);
 
-  //playlist updated
   useEffect(() => {
     if (playlist.length > 0) {
       setCurrentSongUrl(playlist[currentSongIndex].preview_url);
@@ -70,24 +69,21 @@ function App() {
     }
   };
 
-  const submitTempo = () => {
-    fetch(
-      `https://api.spotify.com/v1/recommendations?limit=7&market=US&seed_genres=electronic&target_tempo=${averageTempo}`,
-      {
-        headers: { Authorization: 'Bearer ' + accessToken }
-      }
-    )
-      .then(res => res.json())
-      .then(data => {
-        setPlaylist(data.tracks);
-        setTempoSubmitted(true);
-      })
-      .catch(e => {
-        console.log(e);
-        window.location = window.location.href.includes('localhost')
-          ? 'http://localhost:3000'
-          : 'https://wizardly-villani-b65c20.netlify.com';
-      });
+  const submitTempo = async () => {
+    try {
+      const res = await fetch(
+        `https://api.spotify.com/v1/recommendations?limit=7&market=US&seed_genres=electronic&target_tempo=${averageTempo}`,
+        {
+          headers: { Authorization: 'Bearer ' + accessToken }
+        }
+      );
+      const data = await res.json();
+      setPlaylist(data.tracks);
+      setTempoSubmitted(true);
+    } catch (e) {
+      console.log(e);
+      window.location = window.location.href.includes('localhost') ? 'http://localhost:3000' : 'http://tapify.fun';
+    }
   };
 
   const tapButtonDown = e => {
@@ -146,39 +142,37 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {!loggedIn && <Title />}
-      {!loggedIn && <SpotifyButton />}
-      {loggedIn && !tempoSubmitted && <Instructions />}
-      {loggedIn && !tempoSubmitted && (
-        <TapButton tapButtonDown={tapButtonDown} tapButtonUp={tapButtonUp} tempoTouch={tempoTouch} />
-      )}
-      {averageTempo > 0 && averageTempo < 190 && <BpmDisplay tempo={averageTempo} />}
-      {averageTempo > 0 && !tempoSubmitted && <TempoButton submitTempo={submitTempo} />}
-      {playlist.length > 0 && (
-        <Playlist
-          image={playlist[currentSongIndex].album.images[1].url}
-          artist={playlist[currentSongIndex].artists[0].name}
-          album={playlist[currentSongIndex].album.name}
-          songTitle={playlist[currentSongIndex].name}
-          songUrl={currentSongUrl}
-          playPreview={playPreview}
-          incrementSong={incrementSong}
-          decrementSong={decrementSong}
-          isPlaying={isPlaying}
-          currentSongIndex={currentSongIndex}
-          playlist={playlist}
-        />
-      )}
-      {currentSongUrl === null && tempoSubmitted && <NoSongPreview />}
-      <br />
-      {playlist.length > 0 && <TryAgainButton resetState={resetState} />}
-      <audio
-        ref={audioRef}
-        src={currentSongUrl}
-        style={{ display: 'none' }}
-      />
-    </div>
+    <React.StrictMode>
+      <div className="App">
+        {!loggedIn && <Title />}
+        {!loggedIn && <SpotifyButton />}
+        {loggedIn && !tempoSubmitted && <Instructions />}
+        {loggedIn && !tempoSubmitted && (
+          <TapButton tapButtonDown={tapButtonDown} tapButtonUp={tapButtonUp} tempoTouch={tempoTouch} />
+        )}
+        {averageTempo > 0 && averageTempo < 190 && <BpmDisplay tempo={averageTempo} />}
+        {averageTempo > 0 && !tempoSubmitted && <TempoButton submitTempo={submitTempo} />}
+        {playlist.length > 0 && (
+          <Playlist
+            image={playlist[currentSongIndex].album.images[1].url}
+            artist={playlist[currentSongIndex].artists[0].name}
+            album={playlist[currentSongIndex].album.name}
+            songTitle={playlist[currentSongIndex].name}
+            songUrl={currentSongUrl}
+            playPreview={playPreview}
+            incrementSong={incrementSong}
+            decrementSong={decrementSong}
+            isPlaying={isPlaying}
+            currentSongIndex={currentSongIndex}
+            playlist={playlist}
+          />
+        )}
+        {currentSongUrl === null && tempoSubmitted && <NoSongPreview />}
+        <br />
+        {playlist.length > 0 && <TryAgainButton resetState={resetState} />}
+        <audio ref={audioRef} src={currentSongUrl} style={{ display: 'none' }} />
+      </div>
+    </React.StrictMode>
   );
 }
 
